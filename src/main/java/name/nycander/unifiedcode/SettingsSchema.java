@@ -4,4 +4,8 @@ public interface SettingsSchema {
 	String keyXPath();
 
 	String valueXPath();
+
+	String getIndentationSize();
+
+	String getTabulationSize();
 }

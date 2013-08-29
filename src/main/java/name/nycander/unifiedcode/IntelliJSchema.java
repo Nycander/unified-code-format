@@ -10,4 +10,14 @@ public class IntelliJSchema implements SettingsSchema {
 	public String valueXPath() {
 		return "code_scheme/codeStyleSettings[@language=\"JAVA\"]//option/@value";
 	}
+
+	@Override
+	public String getIndentationSize() {
+		return "INDENT_SIZE";
+	}
+
+	@Override
+	public String getTabulationSize() {
+		return "TAB_SIZE";
+	}
 }
