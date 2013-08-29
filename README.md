@@ -3,17 +3,8 @@ unified-code-format
 
 A utility for maintaining unified code formatting settings
 
-Building
-=======
+**Building:** `> gradle build`
 
-> gradle build
+**Configuration:** None yet :(
 
-
-Configuration
-=============
-None yet :(
-
-Running
-=======
-
-Nothing to run yet! =)
+**Running:** Nothing to run yet! =)
