@@ -30,15 +30,15 @@ import org.xml.sax.SAXException;
 
 public class XmlSettingsFile {
 	private final File xmlInputFile;
-	private final SettingsSchema schema;
+	private final Schema schema;
 	private final Map<String, String> settingsMap;
 
 	public XmlSettingsFile(File xmlInputFile,
-			SettingsSchema schema) throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
+			Schema schema) throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
 		this.xmlInputFile = xmlInputFile;
 		this.schema = schema;
-		this.settingsMap = loadSettingsFromFile(xmlInputFile, schema.keyXPath(), schema
-				.valueXPath());
+		this.settingsMap = loadSettingsFromFile(xmlInputFile, schema.xpathKeys(), schema
+				.xpathValues());
 	}
 
 	public Map<String, String> getSettings() {
@@ -46,8 +46,8 @@ public class XmlSettingsFile {
 	}
 
 	public void save(File outFile) throws SAXException, ParserConfigurationException, XPathExpressionException, IOException, TransformerException {
-		saveXmlFile(outFile, modifyXmlDocumentWithMap(settingsMap, schema.keyXPath(), schema
-				.valueXPath()));
+		saveXmlFile(outFile, modifyXmlDocumentWithMap(settingsMap, schema.xpathKeys(), schema
+				.xpathValues()));
 	}
 
 	private Map<String, String> loadSettingsFromFile(File file,

@@ -30,7 +30,7 @@ public class XmlImporterTest {
 	@Test
 	public void testEclipse() throws ParserConfigurationException, IOException, SAXException, XPathExpressionException, URISyntaxException, TransformerException {
 		File file = getFile("eclipse.xml");
-		EclipseSchema schema = new EclipseSchema();
+		Schema schema = new Schemas().loadEclipseSchema();
 
 		deserializeModifyDeserialize(file, schema);
 	}
@@ -38,21 +38,21 @@ public class XmlImporterTest {
 	@Test
 	public void testIntelliJ() throws Exception {
 		File file = getFile("intellij.xml");
-		SettingsSchema schema = new IntelliJSchema();
+		Schema schema = new Schemas().loadIntelliJSchema();
 
 		deserializeModifyDeserialize(file, schema);
 	}
 
 	@Test
 	public void testNetBeans() throws Exception {
+		Schema schema = new Schemas().loadNetbeansSchema();
 		File file = getFile("netbeans.xml");
-		SettingsSchema schema = new NetbeansSchema();
 
 		deserializeModifyDeserialize(file, schema);
 	}
 
 	private void deserializeModifyDeserialize(File file,
-			SettingsSchema schema) throws SAXException, ParserConfigurationException, XPathExpressionException, IOException, TransformerException {
+			Schema schema) throws SAXException, ParserConfigurationException, XPathExpressionException, IOException, TransformerException {
 		String testValue = "test";
 		modifyAndSave(file, schema, outFile, testValue);
 		XmlSettingsFile settingsFile = new XmlSettingsFile(outFile, schema);
@@ -68,7 +68,7 @@ public class XmlImporterTest {
 	}
 
 	private void modifyAndSave(File file,
-			SettingsSchema schema,
+			Schema schema,
 			File outFile,
 			String testValue) throws SAXException, ParserConfigurationException, XPathExpressionException, IOException, TransformerException {
 		XmlSettingsFile settingsFile = new XmlSettingsFile(file, schema);

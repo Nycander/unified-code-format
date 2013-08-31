@@ -1,0 +1,6 @@
+{
+	"_xpath.keys": "editor-preferences/entry/@name",
+	"_xpath.values": "editor-preferences/entry/value/text()",
+	"indentation.size": "spaces-per-tab",
+	"tabulation.size": "tab-size"
+}
