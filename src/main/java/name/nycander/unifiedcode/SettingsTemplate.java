@@ -28,16 +28,16 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class XmlSettingsFile {
-	private final File xmlInputFile;
+public class SettingsTemplate {
+	private final File templateFile;
 	private final Schema schema;
 	private final Map<String, String> settingsMap;
 
-	public XmlSettingsFile(File xmlInputFile,
+	public SettingsTemplate(File templateFile,
 			Schema schema) throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
-		this.xmlInputFile = xmlInputFile;
+		this.templateFile = templateFile;
 		this.schema = schema;
-		this.settingsMap = loadSettingsFromFile(xmlInputFile, schema.xpathKeys(), schema
+		this.settingsMap = loadSettingsFromFile(templateFile, schema.xpathKeys(), schema
 				.xpathValues());
 	}
 
@@ -46,8 +46,10 @@ public class XmlSettingsFile {
 	}
 
 	public void save(File outFile) throws SAXException, ParserConfigurationException, XPathExpressionException, IOException, TransformerException {
-		saveXmlFile(outFile, modifyXmlDocumentWithMap(settingsMap, schema.xpathKeys(), schema
-				.xpathValues()));
+		Node modifiedMap = modifyXmlDocumentWithMap(settingsMap,
+				schema.xpathKeys(),
+				schema.xpathValues());
+		saveXmlFile(outFile, modifiedMap);
 	}
 
 	private Map<String, String> loadSettingsFromFile(File file,
@@ -79,7 +81,7 @@ public class XmlSettingsFile {
 	private Node modifyXmlDocumentWithMap(Map<String, String> map,
 			String keyXPath,
 			String valueXPath) throws XPathExpressionException, IOException, SAXException, ParserConfigurationException {
-		Document document = loadXmlDocument(xmlInputFile);
+		Document document = loadXmlDocument(templateFile);
 		XPath xPath = XPathFactory.newInstance().newXPath();
 
 		NodeList idList = (NodeList) xPath.compile(keyXPath)

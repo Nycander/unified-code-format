@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.xml.sax.SAXException;
 
-public class XmlImporterTest {
+public class SettingsTemplateTest {
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
@@ -29,7 +29,7 @@ public class XmlImporterTest {
 
 	@Test
 	public void testEclipse() throws ParserConfigurationException, IOException, SAXException, XPathExpressionException, URISyntaxException, TransformerException {
-		File file = getFile("eclipse.xml");
+		File file = getFile("eclipse.template.xml");
 		Schema schema = new Schemas().loadEclipseSchema();
 
 		deserializeModifyDeserialize(file, schema);
@@ -37,7 +37,7 @@ public class XmlImporterTest {
 
 	@Test
 	public void testIntelliJ() throws Exception {
-		File file = getFile("intellij.xml");
+		File file = getFile("intellij.template.xml");
 		Schema schema = new Schemas().loadIntelliJSchema();
 
 		deserializeModifyDeserialize(file, schema);
@@ -46,7 +46,7 @@ public class XmlImporterTest {
 	@Test
 	public void testNetBeans() throws Exception {
 		Schema schema = new Schemas().loadNetbeansSchema();
-		File file = getFile("netbeans.xml");
+		File file = getFile("netbeans.template.xml");
 
 		deserializeModifyDeserialize(file, schema);
 	}
@@ -55,11 +55,11 @@ public class XmlImporterTest {
 			Schema schema) throws SAXException, ParserConfigurationException, XPathExpressionException, IOException, TransformerException {
 		String testValue = "test";
 		modifyAndSave(file, schema, outFile, testValue);
-		XmlSettingsFile settingsFile = new XmlSettingsFile(outFile, schema);
+		SettingsTemplate settingsFile = new SettingsTemplate(outFile, schema);
 		verifyValues(testValue, settingsFile);
 	}
 
-	private void verifyValues(String testValue, XmlSettingsFile settingsFile) {
+	private void verifyValues(String testValue, SettingsTemplate settingsFile) {
 		Assert.assertTrue(!settingsFile.getSettings().isEmpty());
 		for (Entry<String, String> e : settingsFile.getSettings().entrySet()) {
 			Assert.assertEquals(e.getKey() + " should have the value of '" + testValue + "'.",
@@ -71,7 +71,7 @@ public class XmlImporterTest {
 			Schema schema,
 			File outFile,
 			String testValue) throws SAXException, ParserConfigurationException, XPathExpressionException, IOException, TransformerException {
-		XmlSettingsFile settingsFile = new XmlSettingsFile(file, schema);
+		SettingsTemplate settingsFile = new SettingsTemplate(file, schema);
 
 		for (String key : settingsFile.getSettings().keySet()) {
 			settingsFile.getSettings().put(key, testValue);

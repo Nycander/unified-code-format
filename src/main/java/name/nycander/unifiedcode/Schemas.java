@@ -9,30 +9,17 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 
-/**
- * TODO: Remove hardcoded schemas, make loading dynamic.
- */
 public class Schemas {
-	final String defaultNetbeansFilePath = "netbeans.schema.json";
-	final String defaultEclipseFilePath = "eclipse.schema.json";
-	final String defaultIntelliJFilePath = "intellij.schema.json";
-
 	private final Gson gson = new Gson();
-	private final File netbeans;
-	private final File eclipse;
-	private final File intellij;
+	private String prefix, postfix;
 
 	public Schemas() {
-		ClassLoader loader = getClass().getClassLoader();
-		this.netbeans = getFile(loader, defaultNetbeansFilePath);
-		this.eclipse = getFile(loader, defaultEclipseFilePath);
-		this.intellij = getFile(loader, defaultIntelliJFilePath);
+		this("", ".schema.json");
 	}
 
-	public Schemas(File netbeans, File eclipse, File intellij) {
-		this.netbeans = netbeans;
-		this.eclipse = eclipse;
-		this.intellij = intellij;
+	public Schemas(String prefix, String postfix) {
+		this.prefix = prefix;
+		this.postfix = postfix;
 	}
 
 	private File getFile(ClassLoader loader, String filepath) {
@@ -47,28 +34,28 @@ public class Schemas {
 		}
 	}
 
+	public Schema load(String name) {
+		try {
+			return new Schema(gson.fromJson(new FileReader(getFile(getClass().getClassLoader(),
+					prefix + name + postfix)), Map.class));
+		} catch (FileNotFoundException e) {
+			throw new SchemaNotFoundException(e);
+		}
+	}
+
+	@Deprecated
 	public Schema loadNetbeansSchema() {
-		try {
-			return new Schema(gson.fromJson(new FileReader(netbeans), Map.class));
-		} catch (FileNotFoundException e) {
-			throw new SchemaNotFoundException(e);
-		}
+		return load("netbeans");
 	}
 
+	@Deprecated
 	public Schema loadEclipseSchema() {
-		try {
-			return new Schema(gson.fromJson(new FileReader(eclipse), Map.class));
-		} catch (FileNotFoundException e) {
-			throw new SchemaNotFoundException(e);
-		}
+		return load("eclipse");
 	}
 
+	@Deprecated
 	public Schema loadIntelliJSchema() {
-		try {
-			return new Schema(gson.fromJson(new FileReader(intellij), Map.class));
-		} catch (FileNotFoundException e) {
-			throw new SchemaNotFoundException(e);
-		}
+		return load("intellij");
 	}
 
 	public static class SchemaNotFoundException extends RuntimeException {
