@@ -1,6 +1,9 @@
 package name.nycander.unifiedcode;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
@@ -8,34 +11,33 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.google.gson.Gson;
-
-/**
- * @author martin.nycander
- */
 public class SettingsExporterTest {
 	private SettingsExporter exporter;
-
-	private String testSettings = "";
 
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
+	private Map<String, String> configuredSettings;
+
 	@Before
 	public void setup() {
-		Map<String, String> map = new Gson().fromJson(testSettings, Map.class);
-		exporter = new SettingsExporter(map);
+		configuredSettings = new HashMap<>();
+		exporter = new SettingsExporter(configuredSettings);
 	}
 
 	@Test
 	public void exportEclipse() throws Exception {
-		Schema schema = new Schemas().loadEclipseSchema();
+		Schema schema = new Schemas().load("eclipse");
 		SettingsTemplate template = new Templates().load("eclipse", schema);
 
-		File file = temporaryFolder.newFile();
+		configuredSettings.put("indentation.size", "1337");
 
+		File file = temporaryFolder.newFile();
 		exporter.export(template, file);
 
-		// TODO: assert on expected behaviour. perhaps load as template and look at different values?
+		// Load generated file as template and inspect the defaults
+		SettingsTemplate generatedSettings = new SettingsTemplate(file, schema);
+		assertEquals("1337", generatedSettings.getNativeSettings()
+				.get(schema.getNativeField("indentation.size")));
 	}
 }

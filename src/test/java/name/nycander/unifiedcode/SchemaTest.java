@@ -34,14 +34,13 @@ public class SchemaTest {
 	}
 
 	@Test
-	public void indentationSize() throws Exception {
+	public void getNativeField() throws Exception {
 		map.put("indentation.size", "test");
-		assertEquals("test", schema.getIndentationSizeField());
+		assertEquals("test", schema.getNativeField("indentation.size"));
 	}
 
-	@Test
-	public void tabulationSize() throws Exception {
-		map.put("tabulation.size", "test");
-		assertEquals("test", schema.getTabulationSizeField());
+	@Test(expected = NoSuchFieldInSchemaException.class)
+	public void getNativeFieldValidatesExistance() throws Exception {
+		schema.getNativeField("ashfjhsafhsaf");
 	}
 }

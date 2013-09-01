@@ -34,45 +34,13 @@ public class Schemas {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public Schema load(String name) {
 		try {
 			return new Schema(gson.fromJson(new FileReader(getFile(getClass().getClassLoader(),
 					prefix + name + postfix)), Map.class));
 		} catch (FileNotFoundException e) {
 			throw new SchemaNotFoundException(e);
-		}
-	}
-
-	@Deprecated
-	public Schema loadNetbeansSchema() {
-		return load("netbeans");
-	}
-
-	@Deprecated
-	public Schema loadEclipseSchema() {
-		return load("eclipse");
-	}
-
-	@Deprecated
-	public Schema loadIntelliJSchema() {
-		return load("intellij");
-	}
-
-	public static class SchemaNotFoundException extends RuntimeException {
-		public SchemaNotFoundException() {
-			super();
-		}
-
-		public SchemaNotFoundException(String message) {
-			super(message);
-		}
-
-		public SchemaNotFoundException(String message, Throwable cause) {
-			super(message, cause);
-		}
-
-		public SchemaNotFoundException(Throwable cause) {
-			super(cause);
 		}
 	}
 }

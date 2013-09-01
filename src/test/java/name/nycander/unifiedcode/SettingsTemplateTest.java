@@ -30,7 +30,7 @@ public class SettingsTemplateTest {
 	@Test
 	public void testEclipse() throws ParserConfigurationException, IOException, SAXException, XPathExpressionException, URISyntaxException, TransformerException {
 		File file = getFile("eclipse.template.xml");
-		Schema schema = new Schemas().loadEclipseSchema();
+		Schema schema = new Schemas().load("eclipse");
 
 		deserializeModifyDeserialize(file, schema);
 	}
@@ -38,14 +38,14 @@ public class SettingsTemplateTest {
 	@Test
 	public void testIntelliJ() throws Exception {
 		File file = getFile("intellij.template.xml");
-		Schema schema = new Schemas().loadIntelliJSchema();
+		Schema schema = new Schemas().load("intellij");
 
 		deserializeModifyDeserialize(file, schema);
 	}
 
 	@Test
 	public void testNetBeans() throws Exception {
-		Schema schema = new Schemas().loadNetbeansSchema();
+		Schema schema = new Schemas().load("netbeans");
 		File file = getFile("netbeans.template.xml");
 
 		deserializeModifyDeserialize(file, schema);
@@ -60,8 +60,8 @@ public class SettingsTemplateTest {
 	}
 
 	private void verifyValues(String testValue, SettingsTemplate settingsFile) {
-		Assert.assertTrue(!settingsFile.getSettings().isEmpty());
-		for (Entry<String, String> e : settingsFile.getSettings().entrySet()) {
+		Assert.assertTrue(!settingsFile.getNativeSettings().isEmpty());
+		for (Entry<String, String> e : settingsFile.getNativeSettings().entrySet()) {
 			Assert.assertEquals(e.getKey() + " should have the value of '" + testValue + "'.",
 					testValue, e.getValue());
 		}
@@ -73,8 +73,8 @@ public class SettingsTemplateTest {
 			String testValue) throws SAXException, ParserConfigurationException, XPathExpressionException, IOException, TransformerException {
 		SettingsTemplate settingsFile = new SettingsTemplate(file, schema);
 
-		for (String key : settingsFile.getSettings().keySet()) {
-			settingsFile.getSettings().put(key, testValue);
+		for (String key : settingsFile.getNativeSettings().keySet()) {
+			settingsFile.getNativeSettings().put(key, testValue);
 		}
 
 		settingsFile.save(outFile);

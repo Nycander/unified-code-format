@@ -28,6 +28,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+// TODO: Should not own schema, but only get xpath expressions perhaps introducing an interface here could help in decoupling.
 public class SettingsTemplate {
 	private final File templateFile;
 	private final Schema schema;
@@ -41,15 +42,23 @@ public class SettingsTemplate {
 				.xpathValues());
 	}
 
-	public Map<String, String> getSettings() {
+	public Schema getSchema() {
+		return schema;
+	}
+
+	public Map<String, String> getNativeSettings() {
 		return settingsMap;
 	}
 
-	public void save(File outFile) throws SAXException, ParserConfigurationException, XPathExpressionException, IOException, TransformerException {
-		Node modifiedMap = modifyXmlDocumentWithMap(settingsMap,
-				schema.xpathKeys(),
-				schema.xpathValues());
-		saveXmlFile(outFile, modifiedMap);
+	public void save(File outFile) {
+		try {
+			Node modifiedMap = modifyXmlDocumentWithMap(settingsMap,
+					schema.xpathKeys(),
+					schema.xpathValues());
+			saveXmlFile(outFile, modifiedMap);
+		} catch (XPathExpressionException e) {
+			throw new BadSchemaException("XPath expression in schema file could not be compiled.", e);
+		}
 	}
 
 	private Map<String, String> loadSettingsFromFile(File file,
@@ -72,15 +81,19 @@ public class SettingsTemplate {
 		return settings;
 	}
 
-	private static Document loadXmlDocument(File file) throws ParserConfigurationException, SAXException, IOException {
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-		return documentBuilder.parse(file);
+	private static Document loadXmlDocument(File file) {
+		try {
+			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+			return documentBuilder.parse(file);
+		} catch (ParserConfigurationException | SAXException | IOException e) {
+			throw new InvalidTemplateException("Failed to load template '" + file + "'.", e);
+		}
 	}
 
 	private Node modifyXmlDocumentWithMap(Map<String, String> map,
 			String keyXPath,
-			String valueXPath) throws XPathExpressionException, IOException, SAXException, ParserConfigurationException {
+			String valueXPath) throws XPathExpressionException {
 		Document document = loadXmlDocument(templateFile);
 		XPath xPath = XPathFactory.newInstance().newXPath();
 
@@ -98,12 +111,16 @@ public class SettingsTemplate {
 	}
 
 	private static void saveXmlFile(File outFile,
-			Node modifiedMap) throws TransformerException, IOException {
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
-		StringWriter writer = new StringWriter();
-		transformer.transform(new DOMSource(modifiedMap), new StreamResult(writer));
-		Path path = FileSystems.getDefault().getPath(outFile.getAbsolutePath());
-		Files.write(path, writer.toString().getBytes());
+			Node modifiedMap) {
+		try {
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			StringWriter writer = new StringWriter();
+			transformer.transform(new DOMSource(modifiedMap), new StreamResult(writer));
+			Path path = FileSystems.getDefault().getPath(outFile.getAbsolutePath());
+			Files.write(path, writer.toString().getBytes());
+		} catch (TransformerException | IOException e) {
+			throw new UnifyCodeException("Could not save file '" + outFile + "'.", e);
+		}
 	}
 }
