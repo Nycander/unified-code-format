@@ -1,4 +1,4 @@
-package name.nycander.unifiedcode;
+package name.nycander.unifiedcode.schema;
 
 import java.util.Map;
 import java.util.Map.Entry;

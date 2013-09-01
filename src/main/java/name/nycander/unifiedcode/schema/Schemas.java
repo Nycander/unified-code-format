@@ -1,4 +1,4 @@
-package name.nycander.unifiedcode;
+package name.nycander.unifiedcode.schema;
 
 import java.io.File;
 import java.io.FileNotFoundException;

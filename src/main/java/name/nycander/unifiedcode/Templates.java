@@ -3,6 +3,8 @@ package name.nycander.unifiedcode;
 import java.io.File;
 import java.net.URISyntaxException;
 
+import name.nycander.unifiedcode.schema.Schema;
+
 public class Templates {
 	public SettingsTemplate load(String ide, Schema schema) {
 		try {

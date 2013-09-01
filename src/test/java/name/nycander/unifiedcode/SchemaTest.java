@@ -8,6 +8,9 @@ import java.util.TreeMap;
 import org.junit.Before;
 import org.junit.Test;
 
+import name.nycander.unifiedcode.schema.NoSuchFieldInSchemaException;
+import name.nycander.unifiedcode.schema.Schema;
+
 /**
  * @author martin.nycander
  */

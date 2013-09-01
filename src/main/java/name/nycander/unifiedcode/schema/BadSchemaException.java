@@ -1,4 +1,6 @@
-package name.nycander.unifiedcode;
+package name.nycander.unifiedcode.schema;
+
+import name.nycander.unifiedcode.UnifyCodeException;
 
 public class BadSchemaException extends UnifyCodeException {
 	public BadSchemaException() {

@@ -11,18 +11,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-public class SettingsExporterTest {
-	private SettingsExporter exporter;
+import name.nycander.unifiedcode.schema.Schema;
+import name.nycander.unifiedcode.schema.Schemas;
 
+public class SettingsExporterTest {
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-	private Map<String, String> configuredSettings;
+	private SettingsExporter exporter;
 
 	@Before
 	public void setup() {
-		configuredSettings = new HashMap<>();
-		exporter = new SettingsExporter(configuredSettings);
+		exporter = new SettingsExporter();
 	}
 
 	@Test
@@ -30,10 +30,11 @@ public class SettingsExporterTest {
 		Schema schema = new Schemas().load("eclipse");
 		SettingsTemplate template = new Templates().load("eclipse", schema);
 
+		Map<String, String> configuredSettings = new HashMap<>();
 		configuredSettings.put("indentation.size", "1337");
 
 		File file = temporaryFolder.newFile();
-		exporter.export(template, file);
+		exporter.export(configuredSettings, template, file);
 
 		// Load generated file as template and inspect the defaults
 		SettingsTemplate generatedSettings = new SettingsTemplate(file, schema);

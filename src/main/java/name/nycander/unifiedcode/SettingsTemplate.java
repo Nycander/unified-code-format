@@ -28,6 +28,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import name.nycander.unifiedcode.schema.BadSchemaException;
+import name.nycander.unifiedcode.schema.Schema;
+
 // TODO: Should not own schema, but only get xpath expressions perhaps introducing an interface here could help in decoupling.
 public class SettingsTemplate {
 	private final File templateFile;

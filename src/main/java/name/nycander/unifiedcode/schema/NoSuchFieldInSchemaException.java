@@ -1,4 +1,4 @@
-package name.nycander.unifiedcode;
+package name.nycander.unifiedcode.schema;
 
 public class NoSuchFieldInSchemaException extends RuntimeException {
 	public NoSuchFieldInSchemaException() {

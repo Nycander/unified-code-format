@@ -4,18 +4,12 @@ import java.io.File;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import name.nycander.unifiedcode.schema.Schema;
 
 public class SettingsExporter {
-	private final Map<String, String> settings;
-	private final Logger logger = LoggerFactory.getLogger(SettingsExporter.class);
-
-	public SettingsExporter(Map<String, String> settings) {
-		this.settings = settings;
-	}
-
-	public void export(SettingsTemplate template, File file) {
+	public void export(Map<String, String> settings,
+			SettingsTemplate template,
+			File outputFile) {
 		Map<String, String> settingsToModify = template.getNativeSettings();
 
 		Schema schema = template.getSchema();
@@ -30,6 +24,6 @@ public class SettingsExporter {
 			}
 		}
 
-		template.save(file);
+		template.save(outputFile);
 	}
 }

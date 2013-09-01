@@ -16,6 +16,9 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.xml.sax.SAXException;
 
+import name.nycander.unifiedcode.schema.Schema;
+import name.nycander.unifiedcode.schema.Schemas;
+
 public class SettingsTemplateTest {
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
