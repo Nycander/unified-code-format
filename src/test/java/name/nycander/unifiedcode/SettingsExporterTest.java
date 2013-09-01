@@ -6,7 +6,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -18,27 +17,24 @@ public class SettingsExporterTest {
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-	private SettingsExporter exporter;
-
-	@Before
-	public void setup() {
-		exporter = new SettingsExporter();
-	}
-
 	@Test
 	public void exportEclipse() throws Exception {
-		Schema schema = new Schemas().load("eclipse");
-		SettingsTemplate template = new Templates().load("eclipse", schema);
+		Schema outputSchema = new Schemas().load("eclipse");
+		SettingsExporter exporter = new SettingsExporter();
+
+		File file = temporaryFolder.newFile();
+
+		SettingsTemplate outputTemplate = new Templates().load("eclipse", outputSchema);
 
 		Map<String, String> configuredSettings = new HashMap<>();
 		configuredSettings.put("indentation.size", "1337");
 
-		File file = temporaryFolder.newFile();
-		exporter.export(configuredSettings, template, file);
+		exporter.export(configuredSettings, outputSchema, outputTemplate, file);
 
 		// Load generated file as template and inspect the defaults
-		SettingsTemplate generatedSettings = new SettingsTemplate(file, schema);
+		SettingsTemplate generatedSettings = new SettingsTemplate(file, outputSchema.xpathKeys(), outputSchema
+				.xpathValues());
 		assertEquals("1337", generatedSettings.getNativeSettings()
-				.get(schema.getNativeField("indentation.size")));
+				.get(outputSchema.getNativeField("indentation.size")));
 	}
 }

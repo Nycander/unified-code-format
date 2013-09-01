@@ -2,5 +2,10 @@
 	"_xpath.keys": "profiles/profile/setting/@id",
 	"_xpath.values": "profiles/profile/setting/@value",
 	"indentation.size": "org.eclipse.jdt.core.formatter.indentation.size",
-	"tabulation.size": "org.eclipse.jdt.core.formatter.tabulation.size"
+	"tabulation.size": "org.eclipse.jdt.core.formatter.tabulation.size",
+	"use.tab": {
+		"field": "org.eclipse.jdt.core.formatter.tabulation.char",
+		"true": "tab",
+		"false": "space"
+	}
 }

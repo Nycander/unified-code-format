@@ -20,6 +20,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
@@ -29,24 +30,25 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import name.nycander.unifiedcode.schema.BadSchemaException;
-import name.nycander.unifiedcode.schema.Schema;
 
-// TODO: Should not own schema, but only get xpath expressions perhaps introducing an interface here could help in decoupling.
 public class SettingsTemplate {
 	private final File templateFile;
-	private final Schema schema;
 	private final Map<String, String> settingsMap;
+	private final XPathExpression xpathKeysExpr, xpathValuesExpr;
 
 	public SettingsTemplate(File templateFile,
-			Schema schema) throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
+			String xpathKeys, String xpathValues) {
 		this.templateFile = templateFile;
-		this.schema = schema;
-		this.settingsMap = loadSettingsFromFile(templateFile, schema.xpathKeys(), schema
-				.xpathValues());
-	}
 
-	public Schema getSchema() {
-		return schema;
+		try {
+			final XPath xPath = XPathFactory.newInstance().newXPath();
+			xpathKeysExpr = xPath.compile(xpathKeys);
+			xpathValuesExpr = xPath.compile(xpathValues);
+			this.settingsMap = loadSettingsFromFile(templateFile, xpathKeysExpr,
+					xpathValuesExpr);
+		} catch (XPathExpressionException e) {
+			throw new InvalidTemplateException("Invalid xpath in template", e);
+		}
 	}
 
 	public Map<String, String> getNativeSettings() {
@@ -56,24 +58,21 @@ public class SettingsTemplate {
 	public void save(File outFile) {
 		try {
 			Node modifiedMap = modifyXmlDocumentWithMap(settingsMap,
-					schema.xpathKeys(),
-					schema.xpathValues());
+					xpathKeysExpr,
+					xpathValuesExpr);
 			saveXmlFile(outFile, modifiedMap);
 		} catch (XPathExpressionException e) {
-			throw new BadSchemaException("XPath expression in schema file could not be compiled.", e);
+			throw new BadSchemaException("XPath expression in xPathProvider file could not be compiled.", e);
 		}
 	}
 
 	private Map<String, String> loadSettingsFromFile(File file,
-			String keyXPath,
-			String valueXPath) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
+			XPathExpression keyXPath,
+			XPathExpression valueXPath) throws XPathExpressionException {
 		Document document = loadXmlDocument(file);
-		XPath xPath = XPathFactory.newInstance().newXPath();
 
-		NodeList idList = (NodeList) xPath.compile(keyXPath)
-				.evaluate(document, XPathConstants.NODESET);
-		NodeList valueList = (NodeList) xPath.compile(valueXPath)
-				.evaluate(document, XPathConstants.NODESET);
+		NodeList idList = (NodeList) keyXPath.evaluate(document, XPathConstants.NODESET);
+		NodeList valueList = (NodeList) valueXPath.evaluate(document, XPathConstants.NODESET);
 
 		Map<String, String> settings = new ConcurrentSkipListMap<>();
 		for (int i = 0; i < idList.getLength(); i++) {
@@ -95,15 +94,12 @@ public class SettingsTemplate {
 	}
 
 	private Node modifyXmlDocumentWithMap(Map<String, String> map,
-			String keyXPath,
-			String valueXPath) throws XPathExpressionException {
+			XPathExpression keyXPath,
+			XPathExpression valueXPath) throws XPathExpressionException {
 		Document document = loadXmlDocument(templateFile);
-		XPath xPath = XPathFactory.newInstance().newXPath();
 
-		NodeList idList = (NodeList) xPath.compile(keyXPath)
-				.evaluate(document, XPathConstants.NODESET);
-		NodeList valueList = (NodeList) xPath.compile(valueXPath)
-				.evaluate(document, XPathConstants.NODESET);
+		NodeList idList = (NodeList) keyXPath.evaluate(document, XPathConstants.NODESET);
+		NodeList valueList = (NodeList) valueXPath.evaluate(document, XPathConstants.NODESET);
 
 		for (int i = 0; i < idList.getLength(); i++) {
 			String id = idList.item(i).getNodeValue();

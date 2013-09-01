@@ -58,7 +58,8 @@ public class SettingsTemplateTest {
 			Schema schema) throws SAXException, ParserConfigurationException, XPathExpressionException, IOException, TransformerException {
 		String testValue = "test";
 		modifyAndSave(file, schema, outFile, testValue);
-		SettingsTemplate settingsFile = new SettingsTemplate(outFile, schema);
+		SettingsTemplate settingsFile = new SettingsTemplate(outFile, schema.xpathKeys(), schema
+				.xpathValues());
 		verifyValues(testValue, settingsFile);
 	}
 
@@ -74,7 +75,8 @@ public class SettingsTemplateTest {
 			Schema schema,
 			File outFile,
 			String testValue) throws SAXException, ParserConfigurationException, XPathExpressionException, IOException, TransformerException {
-		SettingsTemplate settingsFile = new SettingsTemplate(file, schema);
+		SettingsTemplate settingsFile = new SettingsTemplate(file, schema.xpathKeys(), schema
+				.xpathValues());
 
 		for (String key : settingsFile.getNativeSettings().keySet()) {
 			settingsFile.getNativeSettings().put(key, testValue);

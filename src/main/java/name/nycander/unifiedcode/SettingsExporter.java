@@ -2,28 +2,25 @@ package name.nycander.unifiedcode;
 
 import java.io.File;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import name.nycander.unifiedcode.schema.Schema;
 
 public class SettingsExporter {
 	public void export(Map<String, String> settings,
-			SettingsTemplate template,
+			Schema outputSchema,
+			SettingsTemplate outputTemplate,
 			File outputFile) {
-		Map<String, String> settingsToModify = template.getNativeSettings();
+		Map<String, String> settingsToModify = outputTemplate.getNativeSettings();
 
-		Schema schema = template.getSchema();
-
-		for (Entry<String, String> e : schema.getSchema()) {
-			String field = e.getKey();
-			String nativeField = e.getValue();
+		for (String field : outputSchema.getFields()) {
+			String nativeField = outputSchema.getNativeField(field);
 
 			String value = settings.get(field);
 			if (value != null) {
-				settingsToModify.put(nativeField, value);
+				settingsToModify.put(nativeField, outputSchema.transformValue(field, value));
 			}
 		}
 
-		template.save(outputFile);
+		outputTemplate.save(outputFile);
 	}
 }

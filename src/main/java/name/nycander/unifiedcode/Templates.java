@@ -8,7 +8,8 @@ import name.nycander.unifiedcode.schema.Schema;
 public class Templates {
 	public SettingsTemplate load(String ide, Schema schema) {
 		try {
-			return new SettingsTemplate(getFile(ide + ".template.xml"), schema);
+			return new SettingsTemplate(getFile(ide + ".template.xml"), schema.xpathKeys(), schema
+					.xpathValues());
 		} catch (Exception e) {
 			throw new InvalidTemplateException(e);
 		}
