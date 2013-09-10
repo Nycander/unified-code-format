@@ -1,5 +1,6 @@
 {
 	"indentation.size": "4",
 	"tabulation.size": "4",
-	"use.tab": "false"
+	"use.tab": "false",
+	"space.around_assignment": "true"
 }

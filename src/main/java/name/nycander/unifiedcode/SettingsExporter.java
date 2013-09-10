@@ -1,6 +1,7 @@
 package name.nycander.unifiedcode;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import name.nycander.unifiedcode.schema.Schema;
@@ -13,11 +14,13 @@ public class SettingsExporter {
 		Map<String, String> settingsToModify = outputTemplate.getNativeSettings();
 
 		for (String field : outputSchema.getFields()) {
-			String nativeField = outputSchema.getNativeField(field);
-
-			String value = settings.get(field);
-			if (value != null) {
-				settingsToModify.put(nativeField, outputSchema.transformValue(field, value));
+			List<String> nativeFields = outputSchema.getNativeFields(field);
+			for (String nativeField : nativeFields) {
+				String value = settings.get(field);
+				if (value != null) {
+					settingsToModify.put(nativeField,
+							outputSchema.transformValue(field, value));
+				}
 			}
 		}
 

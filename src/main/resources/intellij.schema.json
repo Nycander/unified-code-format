@@ -3,5 +3,6 @@
 	"_xpath.values": "code_scheme/codeStyleSettings[@language=\"JAVA\"]//option/@value",
 	"indentation.size": "INDENT_SIZE",
 	"tabulation.size": "TAB_SIZE",
-	"use.tab": "USE_TAB_CHARACTER"
+	"use.tab": "USE_TAB_CHARACTER",
+	"space.around_assignment": "SPACE_AROUND_ASSIGNMENT_OPERATORS"
 }

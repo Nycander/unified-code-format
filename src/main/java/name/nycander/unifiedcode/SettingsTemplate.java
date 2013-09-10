@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -31,6 +32,9 @@ import org.xml.sax.SAXException;
 
 import name.nycander.unifiedcode.schema.BadSchemaException;
 
+import com.google.common.base.Functions;
+import com.google.common.collect.Lists;
+
 public class SettingsTemplate {
 	private final File templateFile;
 	private final Map<String, String> settingsMap;
@@ -51,8 +55,13 @@ public class SettingsTemplate {
 		}
 	}
 
+	@Deprecated
 	public Map<String, String> getNativeSettings() {
 		return settingsMap;
+	}
+
+	public List<String> getNativeSettings(List<String> keys) {
+		return Lists.transform(keys, Functions.forMap(settingsMap));
 	}
 
 	public void save(File outFile) {
@@ -62,7 +71,8 @@ public class SettingsTemplate {
 					xpathValuesExpr);
 			saveXmlFile(outFile, modifiedMap);
 		} catch (XPathExpressionException e) {
-			throw new BadSchemaException("XPath expression in xPathProvider file could not be compiled.", e);
+			throw new BadSchemaException(
+					"XPath expression in xPathProvider file could not be compiled.", e);
 		}
 	}
 
@@ -72,7 +82,8 @@ public class SettingsTemplate {
 		Document document = loadXmlDocument(file);
 
 		NodeList idList = (NodeList) keyXPath.evaluate(document, XPathConstants.NODESET);
-		NodeList valueList = (NodeList) valueXPath.evaluate(document, XPathConstants.NODESET);
+		NodeList valueList = (NodeList) valueXPath.evaluate(document,
+				XPathConstants.NODESET);
 
 		Map<String, String> settings = new ConcurrentSkipListMap<>();
 		for (int i = 0; i < idList.getLength(); i++) {
@@ -89,7 +100,8 @@ public class SettingsTemplate {
 			DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 			return documentBuilder.parse(file);
 		} catch (ParserConfigurationException | SAXException | IOException e) {
-			throw new InvalidTemplateException("Failed to load template '" + file + "'.", e);
+			throw new InvalidTemplateException("Failed to load template '" + file + "'.",
+					e);
 		}
 	}
 
@@ -99,7 +111,8 @@ public class SettingsTemplate {
 		Document document = loadXmlDocument(templateFile);
 
 		NodeList idList = (NodeList) keyXPath.evaluate(document, XPathConstants.NODESET);
-		NodeList valueList = (NodeList) valueXPath.evaluate(document, XPathConstants.NODESET);
+		NodeList valueList = (NodeList) valueXPath.evaluate(document,
+				XPathConstants.NODESET);
 
 		for (int i = 0; i < idList.getLength(); i++) {
 			String id = idList.item(i).getNodeValue();

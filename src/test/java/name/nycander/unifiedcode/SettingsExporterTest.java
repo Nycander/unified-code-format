@@ -3,6 +3,7 @@ package name.nycander.unifiedcode;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,15 +27,21 @@ public class SettingsExporterTest {
 
 		SettingsTemplate outputTemplate = new Templates().load("eclipse", outputSchema);
 
+		String indentationSize = "indentation.size";
+		String spacesAroundAssignments = "space.around_assignment";
+
 		Map<String, String> configuredSettings = new HashMap<>();
-		configuredSettings.put("indentation.size", "1337");
+		configuredSettings.put(indentationSize, "1337");
+		configuredSettings.put(spacesAroundAssignments, "true");
 
 		exporter.export(configuredSettings, outputSchema, outputTemplate, file);
 
 		// Load generated file as template and inspect the defaults
-		SettingsTemplate generatedSettings = new SettingsTemplate(file, outputSchema.xpathKeys(), outputSchema
+		SettingsTemplate generatedSettings = new SettingsTemplate(file,
+				outputSchema.xpathKeys(), outputSchema
 				.xpathValues());
-		assertEquals("1337", generatedSettings.getNativeSettings()
-				.get(outputSchema.getNativeField("indentation.size")));
+
+		assertEquals(Arrays.asList("1337"), generatedSettings.getNativeSettings(
+				(outputSchema.getNativeFields(indentationSize))));
 	}
 }

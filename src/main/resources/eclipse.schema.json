@@ -1,11 +1,25 @@
 {
-	"_xpath.keys": "profiles/profile/setting/@id",
-	"_xpath.values": "profiles/profile/setting/@value",
-	"indentation.size": "org.eclipse.jdt.core.formatter.indentation.size",
-	"tabulation.size": "org.eclipse.jdt.core.formatter.tabulation.size",
-	"use.tab": {
-		"field": "org.eclipse.jdt.core.formatter.tabulation.char",
-		"true": "tab",
-		"false": "space"
-	}
+   "_xpath.keys" : "profiles/profile/setting/@id",
+   "_xpath.values" : "profiles/profile/setting/@value",
+   "indentation.size" : "org.eclipse.jdt.core.formatter.indentation.size",
+   "tabulation.size" : "org.eclipse.jdt.core.formatter.tabulation.size",
+   "use.tab" :
+	  {
+		 "field" : "org.eclipse.jdt.core.formatter.tabulation.char",
+		 "true" : "tab",
+		 "false" : "space"
+	  },
+   "space.around_assignment" :
+	  [
+		 {
+			"field:" : "insert_space_after_assignment_operator",
+			"true" : "insert",
+			"false" : "do not insert"
+		 },
+		 {
+			"field:" : "insert_space_before_assignment_operator",
+			"true" : "insert",
+			"false" : "do not insert"
+		 }
+	  ]
 }
